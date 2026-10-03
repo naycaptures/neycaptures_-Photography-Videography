@@ -856,35 +856,15 @@
             }
             .nav-menu {
                 display: block;
-                width: 44px;
-                height: 44px;
-                border: 1px solid rgba(255, 255, 255, .35);
-                border-radius: 50%;
-                background: rgba(40, 34, 38, .28);
-                cursor: pointer;
             }
             .hero {
-                min-height: min(700px, 100svh);
+                min-height: 700px;
             }
             .hero-content {
-                padding-top: 140px;
-                padding-bottom: 64px;
+                padding-bottom: 72px;
             }
             .hero h1 {
-                font-size: clamp(3.25rem, 16vw, 6rem);
-            }
-            .hero-copy {
-                max-width: 340px;
-                font-size: .95rem;
-            }
-            .hero-actions {
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-            .hero-actions .button {
-                min-height: 46px;
-                padding: 0 15px;
-                font-size: .72rem;
+                font-size: clamp(4rem, 19vw, 7rem);
             }
             .intro-grid,
             .notes,
@@ -946,67 +926,6 @@
             }
             .footer-inner {
                 flex-direction: column;
-            }
-        }
-
-        @media (max-width: 560px) {
-            .container {
-                width: min(100% - 36px, 440px);
-            }
-            .section {
-                padding: 64px 0;
-            }
-            .section-heading {
-                margin-bottom: 28px;
-            }
-            .section-heading h2 {
-                font-size: clamp(2.35rem, 12vw, 3.4rem);
-            }
-            .services {
-                grid-template-columns: 1fr;
-            }
-            .gallery {
-                padding-top: 64px;
-            }
-            .gallery-grid {
-                grid-template-columns: minmax(0, 1fr);
-                gap: 16px;
-            }
-            .gallery-item {
-                border-radius: 8px;
-            }
-            .gallery-item img,
-            .gallery-item[data-grid="tall-left"] img,
-            .gallery-item[data-grid="tall-right"] img {
-                aspect-ratio: 4 / 3;
-            }
-            .gallery-overlay {
-                padding: 13px 15px 15px;
-            }
-            .gallery-caption-title {
-                font-size: 1.1rem;
-            }
-            .gallery-caption-sub {
-                font-size: .68rem;
-            }
-            .contact-details {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            .footer-social {
-                flex-wrap: wrap;
-            }
-            .lightbox-content {
-                width: calc(100% - 28px);
-            }
-            .lightbox-body img {
-                max-height: 68svh;
-            }
-            .lightbox-prev {
-                left: 8px;
-            }
-            .lightbox-next {
-                right: 8px;
             }
         }
     </style>
@@ -1283,11 +1202,11 @@
                     </div>
 
                     <div class="gallery-item" data-grid="stack-right-1">
-                        <img loading="lazy" src="wisuda.jpeg" alt="Photoshoot">
+                        <img loading="lazy" src="wisuda.jpeg" alt="Foto Keluarga &amp; Photoshoot">
                         <div class="gallery-overlay">
                             <div class="gallery-caption">
-                                <h3 class="gallery-caption-title">Putri Muslimah Indonesia</h3>
-                                <span class="gallery-caption-sub">Photoshoot</span>
+                                <h3 class="gallery-caption-title">Your story, your way</h3>
+                                <span class="gallery-caption-sub">Photoshoot Keluarga</span>
                             </div>
                         </div>
                     </div>
@@ -1297,7 +1216,7 @@
                         <div class="gallery-overlay">
                             <div class="gallery-caption">
                                 <h3 class="gallery-caption-title">After Munaqosah</h3>
-                                <span class="gallery-caption-sub">Munaqosah</span>
+                                <span class="gallery-caption-sub">Wisuda &amp; Munaqosah</span>
                             </div>
                         </div>
                     </div>
@@ -1306,8 +1225,8 @@
                         <img loading="lazy" src="organisasi.jpeg" alt="foto organisasi &amp; dokumentasi acara">
                         <div class="gallery-overlay">
                             <div class="gallery-caption">
-                                <h3 class="gallery-caption-title">photoshoot organisasi</h3>
-                                <span class="gallery-caption-sub">photoshoot</span>
+                                <h3 class="gallery-caption-title">Graduation Day</h3>
+                                <span class="gallery-caption-sub">photoshot</span>
                             </div>
                         </div>
                     </div>
@@ -1409,7 +1328,120 @@
             </div>
         </div>
     </div>
-    <script src="script.js" defer></script>
+    <script>
+        // Price list filter
+        const tabs = document.querySelectorAll('.tab');
+        const packages = document.querySelectorAll('.package');
+        tabs.forEach((tab) => tab.addEventListener('click', () => {
+            tabs.forEach((item) => item.classList.remove('active'));
+            tab.classList.add('active');
+            const category = tab.dataset.filter;
+            packages.forEach((item) => {
+                item.hidden = item.dataset.category !== category;
+            });
+        }));
+
+        // Mobile Nav Menu
+        const menu = document.querySelector('.nav-menu');
+        const links = document.querySelector('.nav-links');
+        if (menu && links) {
+            menu.addEventListener('click', () => links.classList.toggle('open'));
+            links.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => links.classList.remove('open')));
+        }
+
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        const lightboxTag = document.getElementById('lightbox-tag');
+        const lightboxCounter = document.getElementById('lightbox-counter');
+        const lightboxClose = document.querySelector('.lightbox-close');
+        const lightboxPrev = document.querySelector('.lightbox-prev');
+        const lightboxNext = document.querySelector('.lightbox-next');
+        const lightboxOverlay = document.querySelector('.lightbox-overlay');
+        let visibleItems = [];
+        let currentIndex = 0;
+
+        function getVisibleItems() {
+            return Array.from(galleryItems);
+        }
+
+        function openLightbox(index) {
+            visibleItems = getVisibleItems();
+            if (visibleItems.length === 0) return;
+
+            currentIndex = index;
+            updateLightbox();
+            lightbox.classList.add('active');
+            lightbox.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            lightbox.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        function updateLightbox() {
+            const item = visibleItems[currentIndex];
+            if (!item) return;
+
+            const img = item.querySelector('img');
+            const titleEl = item.querySelector('.gallery-caption-title');
+            const subEl = item.querySelector('.gallery-caption-sub');
+
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt || '';
+            lightboxCaption.textContent = titleEl ? titleEl.textContent : '';
+            lightboxTag.textContent = subEl ? subEl.textContent : '';
+            lightboxCounter.textContent = `${currentIndex + 1} / ${visibleItems.length}`;
+        }
+
+        function showNext() {
+            visibleItems = getVisibleItems();
+            if (visibleItems.length <= 1) return;
+
+            currentIndex = (currentIndex + 1) % visibleItems.length;
+            updateLightbox();
+        }
+
+        function showPrev() {
+            visibleItems = getVisibleItems();
+            if (visibleItems.length <= 1) return;
+
+            currentIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
+            updateLightbox();
+        }
+
+        galleryItems.forEach((item) => {
+            item.addEventListener('click', () => {
+                visibleItems = getVisibleItems();
+                const index = visibleItems.indexOf(item);
+                if (index !== -1) {
+                    openLightbox(index);
+                }
+            });
+        });
+
+        if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+        if (lightboxOverlay) lightboxOverlay.addEventListener('click', closeLightbox);
+        if (lightboxNext) lightboxNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showNext();
+        });
+        if (lightboxPrev) lightboxPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPrev();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox || !lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') showNext();
+            if (e.key === 'ArrowLeft') showPrev();
+        });
+    </script>
 </body>
 
 </html>
